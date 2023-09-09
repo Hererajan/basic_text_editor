@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic Text Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: grid;
+      grid-template-areas:
+        'header'
+        'editor';
+      grid-template-rows: min-content 1fr;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 1rem 0;
+      grid-area: header;
+      background-color: black;
+      color: white;
+    }
+
+    .header > .container {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header .container > h1 {
+      font-size: 1.5rem;
+    }
+
+    .header > .container > select {
+      flex: 1;
+    }
+
+    .header > .container select {
+      background-color: rgb(18, 18, 18);
+      color: inherit;
+      font-size: 1.05rem;
+      border-radius: .25em;
+    }
+
+    .header > .container > .control-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header > .container .color-palette {
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+    }
+
+    .header > .container input[type="color"] {
+      padding: 0;
+      background: transparent;
+      width: 1.5rem;
+    }
+    
+    select,
+    input[type="color"],
+    input[type="file"] {
+      padding: 5px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .editor {
+      grid-area: editor;
+      margin: 20px auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 5px;
+      background-color: transparent;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="container">
+      <h1>Editor</h1>
+      <select id="fontFamilySelect">
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Times New Roman">Times New Roman</option>
+      </select>
+      <div class="control-group">
+        <button id="boldButton">
+          <i class="fa-solid fa-bold fa-lg"></i>
+        </button>
+        <button id="italicButton">
+          <i class="fa-solid fa-italic fa-lg"></i>
+        </button>
+        <button id="underlineButton">
+          <i class="fa-solid fa-underline fa-lg"></i>
+        </button>
+      </div>
+      <div class="control-group">
+        <select id="fontSizeSelect">
+          <option value="12px">12px</option>
+          <option value="16px">16px</option>
+          <option value="20px">20px</option>
+        </select>
+        <div class="color-palette">
+          <label for="fontColorInput">
+            <i class="fa-solid fa-eye-dropper fa-xl"></i>
+          </label>
+          <input type="color" id="fontColorInput" value="#000000">
+        </div>
+      </div>
+      <div>
+        <label for="imageUpload">
+          <i class="fa-regular fa-image fa-xl"></i>
+        </label>
+        <input type="file" id="imageUpload" accept="image/*">
+      </div>
+    </div>
+  </div>
+  <div class="editor container" contenteditable="true" id="textEditor">
+    Start typing here...
+  </div>
+
+  <script>
+    const textEditor = document.getElementById('textEditor');
+    const boldButton = document.getElementById('boldButton');
+    const italicButton = document.getElementById('italicButton');
+    const underlineButton = document.getElementById('underlineButton');
+    const fontSizeSelect = document.getElementById('fontSizeSelect');
+    const fontColorInput = document.getElementById('fontColorInput');
+    const fontFamilySelect = document.getElementById('fontFamilySelect');
+    const imageUpload = document.getElementById('imageUpload');
+
+    boldButton.addEventListener('click', () => {
+      document.execCommand('bold', false, null);
+    });
+
+    italicButton.addEventListener('click', () => {
+      document.execCommand('italic', false, null);
+    });
+
+    underlineButton.addEventListener('click', () => {
+      document.execCommand('underline', false, null);
+    });
+
+    fontSizeSelect.addEventListener('change', () => {
+      const fontSize = fontSizeSelect.value;
+      document.execCommand('fontSize', false, fontSize);
+    });
+
+    fontColorInput.addEventListener('input', () => {
+      const fontColor = fontColorInput.value;
+      document.execCommand('foreColor', false, fontColor);
+    });
+
+    fontFamilySelect.addEventListener('change', () => {
+      const fontFamily = fontFamilySelect.value;
+      document.execCommand('fontName', false, fontFamily);
+    });
+
+    imageUpload.addEventListener('change', () => {
+      const file = imageUpload.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageUrl = e.target.result;
+          document.execCommand('insertImage', false, imageUrl);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+
+</html>
